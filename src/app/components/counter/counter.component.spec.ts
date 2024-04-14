@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { take, toArray } from 'rxjs/operators';
+
 import { click, expectText, getRandomInt, setFieldValue } from 'src/spec-helpers';
 import { CounterComponent } from './counter.component';
 
@@ -71,6 +73,33 @@ describe('CounterComponent', () => {
     click(fixture, 'reset-button');
     // Assert
     expectCount(fixture, startCount, 'reset count');
+  });
+
+  it('emits countChange events', (done: DoneFn) => {
+    // Arrange
+    const { fixture, component } = setup();
+    const newCount = getRandomInt();
+
+    // Capture all emitted values in an array
+    let actualCounts: number[] | undefined;
+
+    // Transform the Observable, then subscribe
+    component.countChange.pipe(
+      take(3),
+      toArray(),
+    ).subscribe((count) => {
+      actualCounts = count;
+      // Assert
+      const { startCount } = component;
+      expect(actualCounts).toEqual([startCount + 1, startCount, newCount]);
+      done();
+    });
+
+    // Act
+    click(fixture, 'increment-button');
+    click(fixture, 'decrement-button');
+    setFieldValue(fixture, 'reset-input', String(newCount));
+    click(fixture, 'reset-button');
   });
 });
 

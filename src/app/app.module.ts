@@ -7,6 +7,7 @@ import { CounterComponent } from './components/counter/counter.component';
 import { HomeComponent } from './components/home/home.component';
 import { ServiceCounterComponent } from './components/service-counter/service-counter.component';
 import { NgrxCounterComponent } from './components/ngrx-counter/ngrx-counter.component';
+import { StoreModule } from '@ngrx/store';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { NgrxCounterComponent } from './components/ngrx-counter/ngrx-counter.com
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    StoreModule.forRoot({}, {})
   ],
   providers: [],
   bootstrap: [AppComponent]

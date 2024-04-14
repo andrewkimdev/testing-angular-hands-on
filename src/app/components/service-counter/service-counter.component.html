@@ -1,1 +1,17 @@
-<p>service-counter works!</p>
+<h1>Counter connected to the service</h1>
+
+<p>
+  <strong data-test-class="count">{{ count$ | async }}</strong>
+</p>
+
+<p>
+  <button (click)="increment()" data-test-class="increment-button">+</button>
+  <button (click)="decrement()" data-test-class="decrement-button">-</button>
+</p>
+
+<p>
+  <input type="number" #input data-test-class="reset-input" />
+  <button (click)="reset(input.value)" data-test-class="reset-button">
+    Reset
+  </button>
+</p>

@@ -16,7 +16,7 @@ class FakeCounterComponent implements Partial<CounterComponent> {
 }
 
 describe('HomeComponent', () => {
-    beforeEach(async () => {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ HomeComponent, FakeCounterComponent ],
       schemas: [ NO_ERRORS_SCHEMA ]

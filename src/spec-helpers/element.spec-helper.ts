@@ -49,6 +49,24 @@ export function getText<T>(
 }
 
 /**
+ * Assertion function for a targeted component and its text content
+ *
+ * @param fixture Component fixture under test
+ * @param testClass 'data-test-class' attribute of the component
+ * @param text Expected text in the component
+ * @param context Explanatory context data
+ */
+export function expectText<T>(
+  fixture: ComponentFixture<T>,
+  testClass: string,
+  text: string,
+  context: string = '',
+): void {
+  const actualText = getText(fixture, testClass);
+  expect(actualText).withContext(context).toBe(text);
+}
+
+/**
  * Emulates a click event on the target element
  *
  * @param fixture Component fixture under test
@@ -60,6 +78,28 @@ export function click<T>(
 ): void {
   const debugEl = findElementByTestClass(fixture, testClass);
   debugEl.triggerEventHandler('click', null);
+}
+
+/**
+ * Makes a fake click event object
+ *
+ * @param target Button / Link elements
+ * @returns Partial<MouseEvent>
+ */
+export function makeClickEvent(
+  target: EventTarget
+): Partial<MouseEvent> {
+  return {
+    preventDefault: void {},
+    stopPropagation: void {},
+    stopImmediatePropagation: void {},
+    type: 'click',
+    target,
+    currentTarget: target,
+    bubbles: true,
+    cancelable: true,
+    button: 0,
+  }
 }
 
 /**

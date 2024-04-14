@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { click, getRandomInt, getText, setFieldValue } from 'src/spec-helpers';
+import { click, expectText, getRandomInt, setFieldValue } from 'src/spec-helpers';
 import { CounterComponent } from './counter.component';
 
 describe('CounterComponent', () => {
@@ -74,7 +74,6 @@ describe('CounterComponent', () => {
   });
 });
 
-function expectCount<T>(fixture: ComponentFixture<T>, a: number | string, context = '') {
-  const countText = getText(fixture, 'count');
-  expect(countText).withContext(context).toBe(String(a));
+function expectCount<T>(fixture: ComponentFixture<T>, value: number | string, context = '') {
+  expectText(fixture, 'count', String(value), context)
 }

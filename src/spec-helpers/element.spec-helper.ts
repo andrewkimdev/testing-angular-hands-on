@@ -13,7 +13,7 @@ import { By } from "@angular/platform-browser";
  * @returns An integer between 0 and the max (default = 10,000)
  */
 export function getRandomInt(max: number = 10000): number {
-  return Math.floor(Math.random() * 10000);
+  return Math.floor(Math.random() * max);
 }
 
 /**
@@ -32,6 +32,20 @@ export function findElementByTestClass<T>(
     throw new Error(`Element "${testClass}" not found`)
   }
   return el;
+}
+
+/**
+ * Finds the first DebugElement instance of the target css selector
+ *
+ * @param fixture Component fixture under test
+ * @param selector css selector for the target component
+ * @returns DebugElement of the target component
+ */
+export function findComponent<T>(
+  fixture: ComponentFixture<T>,
+  selector: string,
+): DebugElement {
+  return fixture.debugElement.query(By.css(selector));
 }
 
 /**

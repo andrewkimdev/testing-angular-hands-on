@@ -35,6 +35,24 @@ export function findElementByTestClass<T>(
 }
 
 /**
+ * Returns the DebugElement searched with directive
+ *
+ * @param fixture Component fixture under test
+ * @param directive Directive name, e.g., 'AppComponent'
+ * @returns DebugElement
+ */
+export function findElementByDirective<T>(
+  fixture: ComponentFixture<T>,
+  directive: any
+): DebugElement {
+  const el = fixture.debugElement.query(By.directive(directive));
+  if (!el) {
+    throw new Error(`Element "${directive}" not found`)
+  }
+  return el;
+}
+
+/**
  * Finds the first DebugElement instance of the target css selector
  *
  * @param fixture Component fixture under test

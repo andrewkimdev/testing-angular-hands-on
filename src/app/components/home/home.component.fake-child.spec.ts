@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { Component, EventEmitter, Input, NO_ERRORS_SCHEMA, Output } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
-import { findElementByDirective, getRandomInt } from 'src/spec-helpers';
+import { getRandomInt } from 'src/spec-helpers';
 
 import { HomeComponent } from './home.component';
 import { CounterComponent } from '../counter/counter.component';
-import { By } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-counter', template: '',

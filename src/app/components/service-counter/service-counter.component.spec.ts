@@ -5,6 +5,7 @@ import { CounterService } from 'src/services/counter.service';
 
 import { click, getRandomInt, setFieldValue } from 'src/spec-helpers';
 import { expectCount } from '../spec-helpers';
+import { of } from 'rxjs';
 
 describe('ServiceCounterComponent: integration test', () => {
   beforeEach(async () => {
@@ -46,5 +47,61 @@ describe('ServiceCounterComponent: integration test', () => {
     click(fixture, 'reset-button');
     fixture.detectChanges();
     expectCount(fixture, newCount);
+  });
+});
+
+describe('ServiceCounterComponent: unit test', () => {
+  const currentCount = getRandomInt();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ServiceCounterComponent],
+      // Use fake instead of original
+      providers: [
+        { provide: CounterService, useValue: getFakeCounterService() },
+      ],
+    }).compileComponents();
+  });
+
+  function setup() {
+    const fixture = TestBed.createComponent(ServiceCounterComponent);
+    const component = fixture.componentInstance;
+    const counterService = TestBed.inject(CounterService);
+    fixture.detectChanges();
+    return { fixture, component, counterService };
+  }
+
+  function getFakeCounterService() {
+    return jasmine.createSpyObj<CounterService>('CounterService', {
+      getCount: of(currentCount),
+      increment: undefined,
+      decrement: undefined,
+      reset: undefined,
+    });
+  }
+
+  it('shows the count', () => {
+    const { fixture, counterService } = setup();
+    expectCount(fixture, currentCount);
+    expect(counterService.getCount).toHaveBeenCalled();
+  });
+
+  it('increments the count', () => {
+    const { fixture, counterService } = setup();
+    click(fixture, 'increment-button');
+    expect(counterService.increment).toHaveBeenCalled();
+  });
+
+  it('decrements the count', () => {
+    const { fixture, counterService } = setup();
+    click(fixture, 'decrement-button');
+    expect(counterService.decrement).toHaveBeenCalled();
+  });
+
+  it('resets the counter', () => {
+    const newCount = getRandomInt();
+    const { fixture, counterService } = setup();
+    setFieldValue(fixture, 'reset-input', String(newCount));
+    click(fixture, 'reset-button');
+    expect(counterService.reset).toHaveBeenCalledWith(newCount);
   });
 });

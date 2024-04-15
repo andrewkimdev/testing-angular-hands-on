@@ -1,7 +1,7 @@
 /* istanbul ignore file */
-import { DebugElement } from "@angular/core";
-import { ComponentFixture } from "@angular/core/testing";
-import { By } from "@angular/platform-browser";
+import { DebugElement } from '@angular/core';
+import { ComponentFixture } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 /**
  * Spec helpers for working with the DOM
  */
@@ -9,11 +9,16 @@ import { By } from "@angular/platform-browser";
 /**
  * Returns a random integer between 0 and a max number (default = 10,000)
  *
+ * @param min Floor of the randomly generated number
  * @param max Ceiling of the randomly generated number
  * @returns An integer between 0 and the max (default = 10,000)
  */
-export function getRandomInt(max: number = 10000): number {
-  return Math.floor(Math.random() * max);
+export function getRandomInt(min = 0, max = 1000): number {
+  // Ensure the range is properly defined
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  // The maximum is inclusive and the minimum is inclusive
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 /**
@@ -27,9 +32,11 @@ export function findElementByTestClass<T>(
   fixture: ComponentFixture<T>,
   testClass: string
 ): DebugElement {
-  const el = fixture.debugElement.query(By.css(`[data-test-class="${testClass}"]`));
+  const el = fixture.debugElement.query(
+    By.css(`[data-test-class="${testClass}"]`)
+  );
   if (!el) {
-    throw new Error(`Element "${testClass}" not found`)
+    throw new Error(`Element "${testClass}" not found`);
   }
   return el;
 }
@@ -47,7 +54,7 @@ export function findElementByDirective<T>(
 ): DebugElement {
   const el = fixture.debugElement.query(By.directive(directive));
   if (!el) {
-    throw new Error(`Element "${directive}" not found`)
+    throw new Error(`Element "${directive}" not found`);
   }
   return el;
 }
@@ -61,7 +68,7 @@ export function findElementByDirective<T>(
  */
 export function findComponent<T>(
   fixture: ComponentFixture<T>,
-  selector: string,
+  selector: string
 ): DebugElement {
   return fixture.debugElement.query(By.css(selector));
 }
@@ -92,7 +99,7 @@ export function expectText<T>(
   fixture: ComponentFixture<T>,
   testClass: string,
   text: string,
-  context: string = '',
+  context: string = ''
 ): void {
   const actualText = getText(fixture, testClass);
   expect(actualText).withContext(context).toBe(text);
@@ -118,9 +125,7 @@ export function click<T>(
  * @param target Button / Link elements
  * @returns Partial<MouseEvent>
  */
-export function makeClickEvent(
-  target: EventTarget
-): Partial<MouseEvent> {
+export function makeClickEvent(target: EventTarget): Partial<MouseEvent> {
   return {
     preventDefault: void {},
     stopPropagation: void {},
@@ -131,7 +136,7 @@ export function makeClickEvent(
     bubbles: true,
     cancelable: true,
     button: 0,
-  }
+  };
 }
 
 /**
@@ -143,7 +148,8 @@ export function makeClickEvent(
  */
 export function setFieldValue<T>(
   fixture: ComponentFixture<T>,
-  testClass: string, value: string
+  testClass: string,
+  value: string
 ): void {
   const el = findElementByTestClass(fixture, testClass);
   setFieldElementValue(el.nativeElement, value);
@@ -161,7 +167,11 @@ export function setFieldElementValue(
 ): void {
   element.value = value;
   const isSelect = element instanceof HTMLSelectElement;
-  dispatchFakeEvent(element, isSelect ? 'change' : 'input', isSelect ? false : true);
+  dispatchFakeEvent(
+    element,
+    isSelect ? 'change' : 'input',
+    isSelect ? false : true
+  );
 }
 
 /**

@@ -5,7 +5,7 @@ import { CounterService } from 'src/services/counter.service';
 
 import { click, getRandomInt, setFieldValue } from 'src/spec-helpers';
 import { expectCount } from '../spec-helpers';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 
 describe('ServiceCounterComponent: integration test', () => {
   beforeEach(async () => {
@@ -104,4 +104,80 @@ describe('ServiceCounterComponent: unit test', () => {
     click(fixture, 'reset-button');
     expect(counterService.reset).toHaveBeenCalledWith(newCount);
   });
+});
+
+describe('ServiceCounterComponent: unit test with minimal Service logic', () => {
+  const newCount = getRandomInt();
+
+  beforeEach(async () => {
+    const { fakeCounterService } = createFakeCounterService();
+    await TestBed.configureTestingModule({
+      declarations: [ServiceCounterComponent],
+      providers: [{ provide: CounterService, useValue: fakeCounterService }],
+    }).compileComponents();
+  });
+
+  function setup() {
+    const fixture = TestBed.createComponent(ServiceCounterComponent);
+    fixture.detectChanges();
+    const counterService = TestBed.inject(CounterService);
+    return { fixture, counterService };
+  }
+
+  it('shows the start count', () => {
+    const { fixture } = setup();
+    expectCount(fixture, 0);
+  });
+
+  it('increments the count', () => {
+    const { fixture, counterService } = setup();
+    click(fixture, 'increment-button');
+    fixture.detectChanges();
+
+    expectCount(fixture, 1);
+    expect(counterService.increment).toHaveBeenCalled();
+  });
+
+  it('decrements the count', () => {
+    const { fixture, counterService } = setup();
+    click(fixture, 'decrement-button');
+    fixture.detectChanges();
+
+    expectCount(fixture, -1);
+    expect(counterService.decrement).toHaveBeenCalled();
+  });
+
+  it('resets the count', () => {
+    const { fixture, counterService } = setup();
+    setFieldValue(fixture, 'reset-input', String(newCount));
+    click(fixture, 'reset-button');
+    fixture.detectChanges();
+
+    expectCount(fixture, newCount);
+    expect(counterService.reset).toHaveBeenCalled();
+  });
+
+  function createFakeCounterService() {
+    const fakeCount$ = new BehaviorSubject(0);
+    const fakeCounterService = {
+      getCount() {
+        return fakeCount$;
+      },
+      increment() {
+        fakeCount$.next(1);
+      },
+      decrement() {
+        fakeCount$.next(-1);
+      },
+      reset() {
+        fakeCount$.next(Number(newCount));
+      },
+    };
+    spyOn(fakeCounterService, 'getCount').and.callThrough();
+    spyOn(fakeCounterService, 'increment').and.callThrough();
+    spyOn(fakeCounterService, 'decrement').and.callThrough();
+    spyOn(fakeCounterService, 'reset').and.callThrough();
+
+    return { fakeCounterService };
+  }
 });

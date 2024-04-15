@@ -1,8 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { take, toArray } from 'rxjs/operators';
 
-import { click, expectText, getRandomInt, setFieldValue } from 'src/spec-helpers';
 import { CounterComponent } from './counter.component';
+import { click, getRandomInt, setFieldValue } from 'src/spec-helpers';
+import { expectCount } from '../spec-helpers';
 
 describe('CounterComponent', () => {
   beforeEach(async () => {
@@ -35,7 +36,7 @@ describe('CounterComponent', () => {
     // Arrange
     const { fixture, component } = setup();
     // Act
-    click(fixture, 'increment-button')
+    click(fixture, 'increment-button');
     fixture.detectChanges();
     // Assert
     expectCount(fixture, component.startCount + 1, 'show incremented count');
@@ -48,7 +49,7 @@ describe('CounterComponent', () => {
     click(fixture, 'decrement-button');
     fixture.detectChanges();
     // Assert
-    expectCount(fixture, component.startCount -1, 'show decremented count');
+    expectCount(fixture, component.startCount - 1, 'show decremented count');
   });
 
   it('should reset counter', () => {
@@ -84,10 +85,7 @@ describe('CounterComponent', () => {
     let actualCounts: number[] | undefined;
 
     // Transform the Observable, then subscribe
-    component.countChange.pipe(
-      take(3),
-      toArray(),
-    ).subscribe((count) => {
+    component.countChange.pipe(take(3), toArray()).subscribe((count) => {
       actualCounts = count;
       // Assert
       const { startCount } = component;
@@ -102,7 +100,3 @@ describe('CounterComponent', () => {
     click(fixture, 'reset-button');
   });
 });
-
-function expectCount<T>(fixture: ComponentFixture<T>, value: number | string, context = '') {
-  expectText(fixture, 'count', String(value), context)
-}

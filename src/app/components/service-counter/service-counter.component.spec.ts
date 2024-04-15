@@ -1,16 +1,17 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { ServiceCounterComponent } from './service-counter.component';
-import { click, expectText, getRandomInt, setFieldValue } from 'src/spec-helpers';
 import { CounterService } from 'src/services/counter.service';
 
-describe('ServiceCounterComponent', () => {
+import { click, getRandomInt, setFieldValue } from 'src/spec-helpers';
+import { expectCount } from '../spec-helpers';
+
+describe('ServiceCounterComponent: integration test', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ServiceCounterComponent ],
-      providers: [ CounterService ]
-    })
-    .compileComponents();
+      declarations: [ServiceCounterComponent],
+      providers: [CounterService],
+    }).compileComponents();
   });
 
   function setup() {
@@ -23,7 +24,6 @@ describe('ServiceCounterComponent', () => {
     const { fixture } = setup();
     expectCount(fixture, 0);
   });
-
 
   it('increments the count', () => {
     const { fixture } = setup();
@@ -47,9 +47,4 @@ describe('ServiceCounterComponent', () => {
     fixture.detectChanges();
     expectCount(fixture, newCount);
   });
-
 });
-
-function expectCount<T>(fixture: ComponentFixture<T>, value: number | string, context = '') {
-  expectText(fixture, 'count', String(value), context)
-}

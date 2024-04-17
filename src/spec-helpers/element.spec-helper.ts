@@ -156,6 +156,24 @@ export function setFieldValue<T>(
 }
 
 /**
+ * Sets check value of the target component
+ *
+ * @param fixture Component fixture under test
+ * @param testClass 'data-test-class' attribute of the component - HTMLInputElement
+ * @param value Text value for the target input element
+ */
+export function checkField<T>(
+  fixture: ComponentFixture<T>,
+  testClass: string,
+  checked: boolean
+): void {
+  const { nativeElement } = findElementByTestClass(fixture, testClass);
+  nativeElement.checked = checked;
+  // Dispatch a 'change' fake event so Angular form bindings take notice of the change.
+  dispatchFakeEvent(nativeElement, 'change');
+}
+
+/**
  * Sets text value of the target element
  *
  * @param element Targeted HTMLInputElement | HTMLTextAreaElement
